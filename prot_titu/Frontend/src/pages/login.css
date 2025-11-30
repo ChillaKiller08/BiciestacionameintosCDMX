@@ -1,0 +1,288 @@
+/* Contenedor general del formulario */
+.login-container {
+  width: 320px;
+  margin: 20px auto;
+  padding: 0;
+  background: linear-gradient(135deg, #1A1A1A 0%, #2a2a2a 100%);
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  position: relative;
+  border: 1px solid rgba(179, 33, 52, 0.2);
+  animation: fadeInUp 0.6s ease-out;
+}
+
+/* FORZAR: Sin fondo rojo en el logo */
+.user-icon {
+  background: transparent !important;
+  background-color: transparent !important;
+  backdrop-filter: none !important;
+  border: none !important;
+}
+
+.user-icon img {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+/* Efecto de brillo sutil en el borde */
+.login-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #B32134, #d42847, #B32134);
+  background-size: 200% 100%;
+  animation: shimmer 3s linear infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Contenedor del icono/logo - SIN FONDO ROJO */
+.user-icon {
+  margin: 25px auto 15px;
+  padding: 12px;
+  background: transparent; /* ← CAMBIADO: Sin fondo */
+  border-radius: 14px;
+  display: inline-block;
+  backdrop-filter: none; /* ← CAMBIADO: Sin blur */
+  border: none; /* ← CAMBIADO: Sin borde */
+  text-align: center;
+  width: 100%;
+}
+
+/* Estilos para la imagen del logo */
+.user-icon img {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  border-radius: 8px;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  filter: brightness(1.05) contrast(1.1);
+}
+
+/* Efecto hover para la imagen */
+.user-icon img:hover {
+  transform: scale(1.08) rotate(-2deg);
+  box-shadow: 0 8px 25px rgba(179, 33, 52, 0.4);
+}
+
+/* Texto debajo del icono */
+.login-container p {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.85);
+  margin-bottom: 20px;
+  text-align: center;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+/* Estilos del formulario */
+.login-form {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: rgba(26, 26, 26, 0.6);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(179, 33, 52, 0.2);
+}
+
+/* Etiquetas */
+.login-form label {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 8px;
+  font-weight: 500;
+  text-align: left;
+}
+
+/* Inputs */
+.login-form input {
+  padding: 12px;
+  border: 2px solid rgba(179, 33, 52, 0.3);
+  border-radius: 10px;
+  font-size: 14px;
+  background: rgba(26, 26, 26, 0.4);
+  color: #ffffff;
+  width: 100%;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+}
+
+/* Placeholder styling */
+.login-form input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* Foco en los inputs */
+.login-form input:focus {
+  outline: none;
+  border-color: #B32134;
+  background: rgba(179, 33, 52, 0.08);
+  box-shadow: 0 0 20px rgba(179, 33, 52, 0.3);
+  transform: translateY(-2px);
+}
+
+/* Enlace para crear cuenta */
+.create-account {
+  text-align: center;
+  margin-top: 12px;
+}
+
+.create-account a {
+  font-size: 13px;
+  color: #B32134;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.create-account a::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: #B32134;
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+}
+
+.create-account a:hover {
+  color: #d42847;
+  text-shadow: 0 0 10px rgba(179, 33, 52, 0.5);
+}
+
+.create-account a:hover::after {
+  width: 100%;
+}
+
+/* Estilo del botón */
+.login-btn {
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #B32134 0%, #8f1a29 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  position: relative;
+  overflow: hidden;
+  margin-top: 8px;
+  box-shadow: 0 4px 15px rgba(179, 33, 52, 0.3);
+}
+
+/* Efecto de brillo en el botón */
+.login-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s;
+}
+
+.login-btn:hover {
+  background: linear-gradient(135deg, #d42847 0%, #B32134 100%);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(179, 33, 52, 0.5);
+}
+
+.login-btn:active {
+  transform: translateY(-1px);
+  box-shadow: 0 5px 15px rgba(179, 33, 52, 0.4);
+}
+
+.login-btn:hover::before {
+  left: 100%;
+}
+
+/* Animación de entrada */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive para móviles */
+@media (max-width: 480px) {
+  .login-container {
+    width: 90%;
+    margin: 50px auto;
+  }
+  
+  .login-form {
+    padding: 25px;
+  }
+  
+  .user-icon {
+    margin: 30px auto 15px;
+    padding: 15px;
+  }
+  
+  .user-icon img {
+    width: 70px;
+    height: 70px;
+  }
+  
+  .login-container p {
+    font-size: 14px;
+  }
+}
+
+/* Mensaje de error */
+.error-message {
+  background: rgba(220, 53, 69, 0.15);
+  color: #dc3545;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  border: 1px solid rgba(220, 53, 69, 0.3);
+  font-size: 13px;
+  font-weight: 500;
+  text-align: center;
+  animation: shake 0.3s ease;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+/* Botón deshabilitado */
+.login-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.login-form input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* El enlace dentro del botón ya no es necesario, pero lo dejamos por compatibilidad */
+.login-btn a {
+  color: inherit;
+  text-decoration: none;
+  width: 100%;
+  display: block;
+}

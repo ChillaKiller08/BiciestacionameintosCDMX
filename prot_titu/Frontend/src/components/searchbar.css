@@ -1,0 +1,105 @@
+/* SearchBar.css - Diseño Limpio */
+.search-bar {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  background: #F5F5F5; /* Gris muy claro */
+  border: 2px solid #aa9a9a; /* Borde gris claro */
+  border-radius: 12px;
+  padding: 8px 12px;
+  transition: all 0.3s ease;
+  min-height: 46px;
+}
+
+.search-bar:focus-within {
+  background: #FFFFFF; /* Blanco al enfocar */
+  border-color: #B32134; /* Rojo */
+  box-shadow: 0 0 0 3px rgba(179, 33, 52, 0.1);
+}
+
+.search-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #1A1A1A; /* Negro */
+  font-size: 15px;
+  padding: 8px;
+  font-weight: 500;
+}
+
+.search-input::placeholder {
+  color: #9E9E9E; /* Gris medio */
+}
+
+.search-button {
+  background: #B32134; /* Rojo */
+  border: none;
+  color: #070505; /* Blanco */
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  min-width: 38px;
+  min-height: 38px;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.search-button:hover {
+  background: #8f1a29; /* Rojo más oscuro */
+  transform: scale(1.05);
+}
+
+.search-button:active {
+  background: #d42847; /* Rojo más claro */
+  transform: scale(0.95);
+}
+
+.search-button svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Tablet */
+@media (max-width: 768px) {
+  .search-bar {
+    padding: 6px 10px;
+    min-height: 44px;
+  }
+  
+  .search-input {
+    font-size: 14px;
+  }
+  
+  .search-button {
+    min-width: 36px;
+    min-height: 36px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .search-bar {
+    padding: 6px 8px;
+    min-height: 42px;
+  }
+  
+  .search-input {
+    font-size: 14px;
+    padding: 6px;
+  }
+  
+  .search-button {
+    min-width: 34px;
+    min-height: 34px;
+    padding: 6px;
+  }
+  
+  .search-button svg {
+    width: 16px;
+    height: 16px;
+  }
+}

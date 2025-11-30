@@ -1,0 +1,80 @@
+/* AddLocationButton.css - Botón Rojo Prominente */
+.add-location-button {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 32px;
+  background: #B32134; /* Rojo */
+  border: none;
+  border-radius: 50px;
+  color: #FFFFFF; /* Blanco */
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(179, 33, 52, 0.4),
+              0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+  z-index: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.add-location-button:hover {
+  background: #d42847; /* Rojo más claro */
+  transform: translateX(-50%) translateY(-4px);
+  box-shadow: 0 12px 32px rgba(179, 33, 52, 0.5),
+              0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.add-location-button:active {
+  transform: translateX(-50%) translateY(-2px);
+  box-shadow: 0 6px 20px rgba(179, 33, 52, 0.4);
+}
+
+.add-location-button svg {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  stroke-width: 2.5;
+}
+
+/* Tablet */
+@media (max-width: 768px) {
+  .add-location-button {
+    bottom: 20px;
+    padding: 14px 28px;
+    font-size: 15px;
+  }
+  
+  .add-location-button svg {
+    width: 22px;
+    height: 22px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .add-location-button {
+    bottom: 16px;
+    padding: 12px 24px;
+    font-size: 14px;
+    gap: 8px;
+    letter-spacing: 0.5px;
+  }
+  
+  .add-location-button svg {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .add-location-button span {
+    max-width: 160px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}

@@ -1,0 +1,248 @@
+/* SIGNUP.CSS - VERSIÓN SIMPLIFICADA */
+
+/* Contenedor general del formulario DE REGISTRO */
+.signup-login-container {
+  width: 320px;
+  max-height: 90vh; /* Altura máxima para permitir scroll */
+  margin: 10px auto;
+  padding: 0;
+  background: linear-gradient(135deg, #949191 0%, #2a2a2a 100%);
+  border-radius: 10px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  overflow-y: auto; /* Scroll vertical */
+  overflow-x: hidden;
+  position: relative;
+  border: 1px solid rgba(179, 33, 52, 0.2);
+}
+
+/* Efecto de brillo sutil en el borde */
+.signup-login-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #B32134, #d42847, #B32134);
+  background-size: 200% 100%;
+  animation: shimmer 3s linear infinite;
+  z-index: 1;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Contenedor del icono/logo */
+.signup-user-icon {
+  margin: 20px auto 10px;
+  padding: 10px;
+  background: rgba(179, 33, 52, 0.1);
+  border-radius: 14px;
+  display: inline-block;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(179, 33, 52, 0.3);
+  text-align: center;
+  width: 100%;
+}
+
+/* Estilos para la imagen del logo */
+.signup-user-icon img {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+  border-radius: 8px;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  filter: brightness(1.05) contrast(1.1);
+}
+
+/* Efecto hover para la imagen */
+.signup-user-icon img:hover {
+  transform: scale(1.08) rotate(-2deg);
+  box-shadow: 0 8px 25px rgba(179, 33, 52, 0.4);
+}
+
+/* Texto debajo del logo */
+.signup-login-container p {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.85);
+  margin-bottom: 15px;
+  text-align: center;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+/* Estilos del formulario */
+.signup-login-form {
+  padding: 15px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: rgba(26, 26, 26, 0.6);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(179, 33, 52, 0.2);
+}
+
+/* Etiquetas */
+.signup-login-form label {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 4px;
+  font-weight: 500;
+  text-align: left;
+}
+
+/* Inputs */
+.signup-login-form input {
+  padding: 10px;
+  border: 2px solid rgba(179, 33, 52, 0.3);
+  border-radius: 10px;
+  font-size: 13px;
+  background: rgba(26, 26, 26, 0.4);
+  color: #ffffff;
+  width: 100%;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+}
+
+/* Placeholder styling */
+.signup-login-form input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* Foco en los inputs */
+.signup-login-form input:focus {
+  outline: none;
+  border-color: #B32134;
+  background: rgba(179, 33, 52, 0.08);
+  box-shadow: 0 0 20px rgba(179, 33, 52, 0.3);
+  transform: translateY(-2px);
+}
+
+/* Estilo del botón */
+.signup-btn {
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #B32134 0%, #8f1a29 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  position: relative;
+  overflow: hidden;
+  margin-top: 5px;
+  box-shadow: 0 4px 15px rgba(179, 33, 52, 0.3);
+}
+
+/* Efecto de brillo en el botón */
+.signup-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s;
+}
+
+.signup-btn:hover {
+  background: linear-gradient(135deg, #d42847 0%, #B32134 100%);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(179, 33, 52, 0.5);
+}
+
+.signup-btn:active {
+  transform: translateY(-1px);
+  box-shadow: 0 5px 15px rgba(179, 33, 52, 0.4);
+}
+
+.signup-btn:hover::before {
+  left: 100%;
+}
+
+/* Enlace para iniciar sesión */
+.signup-create-account {
+  text-align: center;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.signup-create-account a {
+  font-size: 13px;
+  color: #B32134;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.signup-create-account a::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: #B32134;
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+}
+
+.signup-create-account a:hover {
+  color: #d42847;
+  text-shadow: 0 0 10px rgba(179, 33, 52, 0.5);
+}
+
+.signup-create-account a:hover::after {
+  width: 100%;
+}
+
+/* Scrollbar personalizado para el contenedor */
+.signup-login-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.signup-login-container::-webkit-scrollbar-track {
+  background: rgba(26, 26, 26, 0.4);
+}
+
+.signup-login-container::-webkit-scrollbar-thumb {
+  background: rgba(179, 33, 52, 0.6);
+  border-radius: 3px;
+}
+
+.signup-login-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(179, 33, 52, 0.8);
+}
+
+/* Responsive para móviles */
+@media (max-width: 480px) {
+  .signup-login-container {
+    width: 90%;
+    margin: 20px auto;
+    max-height: 85vh;
+  }
+  
+  .signup-login-form {
+    padding: 15px;
+  }
+  
+  .signup-user-icon {
+    margin: 15px auto 10px;
+    padding: 8px;
+  }
+  
+  .signup-user-icon img {
+    width: 45px;
+    height: 45px;
+  }
+  
+  .signup-login-container p {
+    font-size: 12px;
+  }
+}
