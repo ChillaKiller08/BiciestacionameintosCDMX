@@ -576,3 +576,43 @@
     height: 150px;
   }
 }
+
+/* Botón para recentrar en ubicación del usuario */
+.recenter-btn {
+  position: absolute;
+  bottom: 120px;
+  right: 20px;
+  z-index: 1000;
+  width: 50px;
+  height: 50px;
+  background: #FFFFFF;
+  border: 2px solid #E0E0E0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+}
+
+.recenter-btn:hover {
+  background: #B32134;
+  border-color: #B32134;
+  color: #FFFFFF;
+  transform: scale(1.1);
+  box-shadow: 0 6px 16px rgba(179, 33, 52, 0.3);
+}
+
+.recenter-btn svg {
+  color: currentColor;
+}
+
+@media (max-width: 768px) {
+  .recenter-btn {
+    bottom: 100px;
+    right: 15px;
+    width: 45px;
+    height: 45px;
+  }
+}

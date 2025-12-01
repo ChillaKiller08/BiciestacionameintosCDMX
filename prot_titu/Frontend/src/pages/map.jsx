@@ -29,6 +29,43 @@ const Map = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [mapInstance, setMapInstance] = useState(null);
   const [showDetailView, setShowDetailView] = useState(false);
+  const [userLocation, setUserLocation] = useState(null);
+  const [mapCenter, setMapCenter] = useState(defaultCenter);
+  const [locationLoading, setLocationLoading] = useState(true);
+
+  // Obtener ubicación del usuario
+  useEffect(() => {
+    if (navigator.geolocation) {
+      setLocationLoading(true);
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const userPos = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          };
+          setUserLocation(userPos);
+          setMapCenter(userPos); // Centrar el mapa en la ubicación del usuario
+          console.log('✅ Ubicación del usuario obtenida:', userPos);
+          setLocationLoading(false);
+        },
+        (error) => {
+          console.warn('⚠️ No se pudo obtener la ubicación del usuario:', error.message);
+          // Usar ubicación por defecto (Centro CDMX)
+          setMapCenter(defaultCenter);
+          setLocationLoading(false);
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 0
+        }
+      );
+    } else {
+      console.warn('❌ Geolocalización no soportada por el navegador');
+      setMapCenter(defaultCenter);
+      setLocationLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
     fetchBiciestacionamientos();
@@ -68,6 +105,15 @@ const Map = () => {
     setSelectedLocation(null);
   };
 
+  const handleRecenterMap = () => {
+    if (userLocation && mapInstance) {
+      mapInstance.panTo(userLocation);
+      mapInstance.setZoom(15);
+    } else {
+      alert('No se pudo obtener tu ubicación');
+    }
+  };
+
   if (!apiKey) {
     return (
       <div style={{ 
@@ -97,6 +143,20 @@ const Map = () => {
             <line x1="9" y1="3" x2="9" y2="21"></line>
           </svg>
           <span>{isSidebarOpen ? 'Ocultar' : 'Ver'} Lista</span>
+        </button>
+      )}
+
+      {/* Botón para recentrar en ubicación del usuario */}
+      {userLocation && (
+        <button 
+          className="recenter-btn"
+          onClick={handleRecenterMap}
+          title="Volver a mi ubicación"
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <circle cx="12" cy="12" r="3"></circle>
+          </svg>
         </button>
       )}
 
@@ -305,11 +365,24 @@ const Map = () => {
       <LoadScript googleMapsApiKey={apiKey}>
         <GoogleMap
           mapContainerStyle={mapStyles}
-          zoom={13}
-          center={defaultCenter}
+          zoom={userLocation ? 15 : 13}
+          center={mapCenter}
           options={mapOptions}
           onLoad={(map) => setMapInstance(map)}
         >
+          {/* Marcador de ubicación del usuario */}
+          {userLocation && (
+            <Marker
+              position={userLocation}
+              icon={{
+                url: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+                scaledSize: new window.google.maps.Size(40, 40)
+              }}
+              title="Tu ubicación"
+            />
+          )}
+
+          {/* Marcadores de biciestacionamientos */}
           {biciestacionamientos.map((bici) => (
             <Marker
               key={bici._id}
@@ -325,6 +398,7 @@ const Map = () => {
             />
           ))}
 
+          {/* InfoWindow */}
           {selectedLocation && showDetailView && (
             <InfoWindow
               position={{
