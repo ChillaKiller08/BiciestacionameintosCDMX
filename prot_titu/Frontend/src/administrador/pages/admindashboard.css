@@ -10,6 +10,8 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  overflow-y: auto; /* 👈 AGREGAR */
+  height: 100vh; /* 👈 AGREGAR */
 }
 
 .admin-header {
@@ -49,6 +51,7 @@
   flex: 1;
   padding: 24px;
   overflow-y: auto;
+  max-height: calc(100vh - 80px); /* 👈 AGREGAR (ajusta según tu header) */
 }
 
 /* Mobile */

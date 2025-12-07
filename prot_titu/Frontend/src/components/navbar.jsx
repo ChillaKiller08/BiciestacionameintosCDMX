@@ -9,13 +9,11 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Obtener los datos del usuario desde localStorage
     const userDataString = localStorage.getItem('user');
     
     if (userDataString) {
       try {
         const userData = JSON.parse(userDataString);
-        // Usar el nombre del usuario, o 'Ciclista' por defecto
         setUserName(userData.nombre || 'Ciclista');
       } catch (error) {
         console.error('Error al parsear datos del usuario:', error);
@@ -29,12 +27,14 @@ const Navbar = () => {
   };
 
   const handleLogout = () => {
-    // Limpiar localStorage
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-    
-    // Redirigir al login
     navigate('/');
+  };
+
+  const handleProfile = () => {
+    setMenuOpen(false);
+    navigate('/perfil');
   };
 
   return (
@@ -61,10 +61,19 @@ const Navbar = () => {
 
       {menuOpen && (
         <div className="dropdown-menu">
-          <a href="/perfil">Mi Perfil</a>
-          <a href="/mis-rutas">Mis Rutas</a>
-          <a href="/configuracion">Configuración</a>
-          <button onClick={handleLogout} className="logout-link">
+          <button onClick={handleProfile} className="menu-item">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+            Mi Perfil
+          </button>
+          <button onClick={handleLogout} className="menu-item logout">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+              <polyline points="16 17 21 12 16 7"></polyline>
+              <line x1="21" y1="12" x2="9" y2="12"></line>
+            </svg>
             Cerrar Sesión
           </button>
         </div>

@@ -1,5 +1,6 @@
 // AddBiciestacionamiento.jsx
 import React, { useState } from 'react';
+import ImageUploader from '../../components/imageuploader/imageuploader';
 import './addbiciestacionamiento.css';
 
 const AddBiciestacionamiento = ({ onClose, onSuccess }) => {
@@ -16,7 +17,7 @@ const AddBiciestacionamiento = ({ onClose, onSuccess }) => {
     capacidad: '',
     tipo: 'Público',
     requisitos: '',
-    foto: '',
+    foto: '', // 👈 URL de Cloudinary
     descripcion: ''
   });
   const [loading, setLoading] = useState(false);
@@ -30,6 +31,12 @@ const AddBiciestacionamiento = ({ onClose, onSuccess }) => {
       ...formData,
       [name]: value
     });
+  };
+
+  // 👇 NUEVO: Recibir URL de Cloudinary
+  const handleImageUploaded = (url) => {
+    setFormData(prev => ({ ...prev, foto: url }));
+    setError('');
   };
 
   const handleDiasChange = (dia) => {
@@ -66,6 +73,11 @@ const AddBiciestacionamiento = ({ onClose, onSuccess }) => {
       return;
     }
 
+    if (!formData.foto) {
+      setError('La foto es obligatoria');
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -85,8 +97,8 @@ const AddBiciestacionamiento = ({ onClose, onSuccess }) => {
             colonia: formData.colonia,
             codigoPostal: formData.codigoPostal,
             coordenadas: {
-              lat: parseFloat(formData.lat),
-              lng: parseFloat(formData.lng)
+              type: 'Point',
+              coordinates: [parseFloat(formData.lng), parseFloat(formData.lat)]
             }
           },
           horario: formData.horario,
@@ -94,7 +106,7 @@ const AddBiciestacionamiento = ({ onClose, onSuccess }) => {
           capacidad: parseInt(formData.capacidad),
           tipo: formData.tipo,
           requisitos: formData.requisitos,
-          foto: formData.foto,
+          foto: formData.foto, // 👈 URL de Cloudinary
           descripcion: formData.descripcion
         })
       });
@@ -102,7 +114,7 @@ const AddBiciestacionamiento = ({ onClose, onSuccess }) => {
       const data = await response.json();
 
       if (data.success) {
-        alert('Biciestacionamiento registrado exitosamente');
+        alert('✅ Biciestacionamiento registrado exitosamente');
         if (onSuccess) onSuccess();
         if (onClose) onClose();
       } else {
@@ -350,16 +362,12 @@ const AddBiciestacionamiento = ({ onClose, onSuccess }) => {
               />
             </div>
 
+            {/* 👇 IMAGEN CON CLOUDINARY */}
             <div className="form-group">
-              <label htmlFor="foto">URL de Foto</label>
-              <input
-                type="url"
-                id="foto"
-                name="foto"
-                placeholder="https://ejemplo.com/foto.jpg"
-                value={formData.foto}
-                onChange={handleChange}
-                disabled={loading}
+              <label>Fotografía *</label>
+              <ImageUploader 
+                onImageUploaded={handleImageUploaded}
+                currentImage={formData.foto}
               />
             </div>
           </div>

@@ -1,11 +1,9 @@
 // main.jsx (Home.jsx)
 import React, { useState, useEffect } from 'react';
-import Navbar from '../components/navbar.jsx';
-import SearchBar from '../components/searchbar.jsx';
-import FilterButton from '../components/filterbutton.jsx';
-import Map from './map.jsx';
-import AddLocationButton from '../components/addlocationbutton.jsx';
-import AddLocationModal from '../components/addlocationmodal.jsx';
+import Navbar from '../components/navbar';
+import Map from '../components/map';
+import AddLocationButton from '../components/addlocationbutton';
+import AddLocationModal from '../components/addlocationmodal';
 import './main.css';
 
 const Home = () => {
@@ -16,20 +14,10 @@ const Home = () => {
     // Esperar a que el mapa esté listo
     const timer = setTimeout(() => {
       setIsPageReady(true);
-    }, 1500); // 1.5 segundos para dar tiempo al mapa
+    }, 1500);
 
     return () => clearTimeout(timer);
   }, []);
-
-  const handleSearch = (searchTerm) => {
-    console.log('Buscando:', searchTerm);
-    // Aquí irá tu lógica de búsqueda
-  };
-
-  const handleFilter = () => {
-    console.log('Abrir filtros');
-    // Aquí irá tu lógica de filtros
-  };
 
   const handleAddLocation = () => {
     setIsModalOpen(true);
@@ -41,7 +29,7 @@ const Home = () => {
 
   return (
     <>
-      {/* Loading Overlay - se muestra encima mientras carga */}
+      {/* Loading Overlay */}
       {!isPageReady && (
         <div className="loading-overlay">
           <div className="loading-content">
@@ -52,16 +40,12 @@ const Home = () => {
         </div>
       )}
 
-      {/* Contenido principal - siempre renderizado */}
+      {/* Contenido principal */}
       <div className={`home-container ${isPageReady ? 'ready' : ''}`}>
         <Navbar />
         
-        <div className="search-section">
-          <SearchBar onSearch={handleSearch} />
-          <FilterButton onClick={handleFilter} />
-        </div>
-
-        <div className="map-container">
+        {/* Map.jsx ya tiene SearchBar y FilterButton integrados */}
+        <div className="map-wrapper">
           <Map />
         </div>
 

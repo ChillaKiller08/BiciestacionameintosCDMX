@@ -2,20 +2,20 @@
 import React, { useState } from 'react';
 import AdminSidebar from '../components/adminsidebar';
 import UsersManagement from '../components/usersmanagement';
-import LocationRequests from '../components/locationrequests';
 import LocationsManagement from '../components/locationsmanagement';
 import AddBiciestacionamiento from '../components/AddBiciestacionamiento';
+import AdminPropuestas from '../components/adminpropuestas';
 import './admindashboard.css';
 
 const AdminDashboard = () => {
-  const [activeSection, setActiveSection] = useState('requests');
+  const [activeSection, setActiveSection] = useState('propuestas');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [showAddBiciModal, setShowAddBiciModal] = useState(false);
 
   const renderContent = () => {
     switch(activeSection) {
-      case 'requests':
-        return <LocationRequests />;
+      case 'propuestas':
+        return <AdminPropuestas />;
       case 'locations':
         return <LocationsManagement />;
       case 'users':
@@ -45,7 +45,7 @@ const AdminDashboard = () => {
           </div>
         );
       default:
-        return <LocationRequests />;
+        return <AdminPropuestas />;
     }
   };
 
@@ -86,7 +86,6 @@ const AdminDashboard = () => {
           onClose={() => setShowAddBiciModal(false)}
           onSuccess={() => {
             setShowAddBiciModal(false);
-            // Opcional: recargar la lista de ubicaciones
           }}
         />
       )}

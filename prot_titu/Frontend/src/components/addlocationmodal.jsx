@@ -1,393 +1,316 @@
-// AddLocationModal.jsx
-import React, { useState } from 'react';
+// addlocationmodal.jsx
+import React, { useState, useEffect } from 'react';
+import ImageUploader from './imageuploader/imageuploader';
 import './addlocationmodal.css';
-
-const DELEGACIONES_CDMX = [
-  'Álvaro Obregón',
-  'Azcapotzalco',
-  'Benito Juárez',
-  'Coyoacán',
-  'Cuajimalpa de Morelos',
-  'Cuauhtémoc',
-  'Gustavo A. Madero',
-  'Iztacalco',
-  'Iztapalapa',
-  'La Magdalena Contreras',
-  'Miguel Hidalgo',
-  'Milpa Alta',
-  'Tláhuac',
-  'Tlalpan',
-  'Venustiano Carranza',
-  'Xochimilco'
-];
-
-const HORARIOS_PREDEFINIDOS = [
-  '24 horas',
-  'Lunes a Viernes 6:00 - 22:00',
-  'Lunes a Viernes 7:00 - 20:00',
-  'Lunes a Domingo 6:00 - 22:00',
-  'Lunes a Domingo 7:00 - 21:00',
-  'Personalizado'
-];
 
 const AddLocationModal = ({ isOpen, onClose }) => {
   const [formData, setFormData] = useState({
     nombre: '',
-    delegacion: '',
+    direccion: '',
     colonia: '',
-    calle: '',
-    numero: '',
-    descripcion: '',
+    delegacion: '',
+    lat: '',
+    lng: '',
     horario: '',
-    horarioPersonalizado: '',
+    dias: [],
     capacidad: '',
-    tipoAcceso: 'publico',
-    foto: null
+    tipo: '',
+    requisitos: '',
+    descripcion: '',
+    foto: '' // 👈 Ahora es string (URL de Cloudinary)
   });
 
-  const [fotoPreview, setFotoPreview] = useState(null);
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [map, setMap] = useState(null);
+  const [marker, setMarker] = useState(null);
+
+  const delegaciones = [
+    'Álvaro Obregón', 'Azcapotzalco', 'Benito Juárez', 'Coyoacán',
+    'Cuajimalpa', 'Cuauhtémoc', 'Gustavo A. Madero', 'Iztacalco',
+    'Iztapalapa', 'Magdalena Contreras', 'Miguel Hidalgo', 'Milpa Alta',
+    'Tláhuac', 'Tlalpan', 'Venustiano Carranza', 'Xochimilco'
+  ];
+
+  const diasSemana = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+
+  // Inicializar mapa
+  useEffect(() => {
+    if (isOpen && window.google && !map) {
+      setTimeout(() => {
+        const mapElement = document.getElementById('proposal-map');
+        
+        if (mapElement) {
+          const newMap = new window.google.maps.Map(mapElement, {
+            center: { lat: 19.432608, lng: -99.133209 },
+            zoom: 12
+          });
+
+          newMap.addListener('click', (e) => {
+            if (marker) marker.setMap(null);
+            
+            const newMarker = new window.google.maps.Marker({
+              position: e.latLng,
+              map: newMap,
+              draggable: true
+            });
+
+            setFormData(prev => ({
+              ...prev,
+              lat: e.latLng.lat().toFixed(6),
+              lng: e.latLng.lng().toFixed(6)
+            }));
+
+            newMarker.addListener('dragend', (ev) => {
+              setFormData(prev => ({
+                ...prev,
+                lat: ev.latLng.lat().toFixed(6),
+                lng: ev.latLng.lng().toFixed(6)
+              }));
+            });
+
+            setMarker(newMarker);
+          });
+
+          setMap(newMap);
+        }
+      }, 500);
+    }
+  }, [isOpen, map, marker]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-    // Limpiar error del campo cuando el usuario empieza a escribir
-    if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
-    }
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleFotoChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      // Validar que sea una imagen
-      if (!file.type.startsWith('image/')) {
-        setErrors(prev => ({ ...prev, foto: 'Solo se permiten imágenes' }));
-        return;
-      }
-      
-      // Validar tamaño (máximo 5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        setErrors(prev => ({ ...prev, foto: 'La imagen no debe superar 5MB' }));
-        return;
-      }
+  // 👇 NUEVO: Recibir URL de Cloudinary
+  const handleImageUploaded = (url) => {
+    setFormData(prev => ({ ...prev, foto: url }));
+    setErrors(prev => ({ ...prev, foto: null }));
+  };
 
-      setFormData(prev => ({ ...prev, foto: file }));
-      
-      // Crear preview
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setFotoPreview(reader.result);
-      };
-      reader.readAsDataURL(file);
-      
-      setErrors(prev => ({ ...prev, foto: '' }));
-    }
+  const handleDiasChange = (dia) => {
+    setFormData(prev => ({
+      ...prev,
+      dias: prev.dias.includes(dia) ? prev.dias.filter(d => d !== dia) : [...prev.dias, dia]
+    }));
   };
 
   const validateForm = () => {
     const newErrors = {};
-
-    if (!formData.nombre.trim()) newErrors.nombre = 'El nombre es obligatorio';
-    if (!formData.delegacion) newErrors.delegacion = 'Selecciona una delegación';
-    if (!formData.colonia.trim()) newErrors.colonia = 'La colonia es obligatoria';
-    if (!formData.calle.trim()) newErrors.calle = 'La calle es obligatoria';
-    if (!formData.descripcion.trim()) newErrors.descripcion = 'La descripción es obligatoria';
-    if (!formData.horario) newErrors.horario = 'Selecciona un horario';
-    if (formData.horario === 'Personalizado' && !formData.horarioPersonalizado.trim()) {
-      newErrors.horarioPersonalizado = 'Especifica el horario';
-    }
-    if (!formData.foto) newErrors.foto = 'Agrega una foto del biciestacionamiento';
-
+    if (!formData.nombre.trim()) newErrors.nombre = 'Requerido';
+    if (!formData.direccion.trim()) newErrors.direccion = 'Requerido';
+    if (!formData.colonia.trim()) newErrors.colonia = 'Requerido';
+    if (!formData.delegacion) newErrors.delegacion = 'Requerido';
+    if (!formData.horario.trim()) newErrors.horario = 'Requerido';
+    if (formData.dias.length === 0) newErrors.dias = 'Selecciona días';
+    if (!formData.capacidad || formData.capacidad < 1) newErrors.capacidad = 'Requerido';
+    if (!formData.tipo) newErrors.tipo = 'Requerido';
+    if (!formData.lat || !formData.lng) newErrors.ubicacion = 'Selecciona en el mapa';
+    if (!formData.foto) newErrors.foto = 'Sube una imagen';
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    if (!validateForm()) {
-      return;
+    if (!validateForm()) return;
+
+    setLoading(true);
+    try {
+      const token = localStorage.getItem('token');
+      
+      // 👇 CAMBIO: Ahora enviamos JSON en lugar de FormData
+      const response = await fetch('http://localhost:5000/api/propuestas', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}` 
+        },
+        body: JSON.stringify(formData) // 👈 Enviar como JSON
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        setSuccess(true);
+        setTimeout(handleClose, 2500);
+      } else {
+        setErrors({ submit: data.message });
+      }
+    } catch (error) {
+      setErrors({ submit: 'Error de conexión' });
+    } finally {
+      setLoading(false);
     }
-
-    // Aquí enviarías los datos al backend
-    console.log('Datos del formulario:', formData);
-    console.log('Foto:', formData.foto);
-
-    // Simular envío exitoso
-    alert('¡Biciestacionamiento agregado exitosamente!');
-    handleClose();
   };
 
   const handleClose = () => {
+    if (marker) marker.setMap(null);
+    setMap(null);
+    setMarker(null);
     setFormData({
-      nombre: '',
-      delegacion: '',
-      colonia: '',
-      calle: '',
-      numero: '',
-      descripcion: '',
-      horario: '',
-      horarioPersonalizado: '',
-      capacidad: '',
-      tipoAcceso: 'publico',
-      foto: null
+      nombre: '', direccion: '', colonia: '', delegacion: '',
+      lat: '', lng: '', horario: '', dias: [], capacidad: '',
+      tipo: '', requisitos: '', descripcion: '', foto: ''
     });
-    setFotoPreview(null);
     setErrors({});
+    setSuccess(false);
     onClose();
   };
 
   if (!isOpen) return null;
 
+  if (success) {
+    return (
+      <div className="modal-overlay" onClick={handleClose}>
+        <div className="modal-success" onClick={(e) => e.stopPropagation()}>
+          <div className="success-icon">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#28a745" strokeWidth="2">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+          </div>
+          <h2>¡Propuesta Enviada!</h2>
+          <p>Será revisada por un administrador.</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="modal-overlay" onClick={handleClose}>
-      <div className="modal-container" onClick={(e) => e.stopPropagation()}>
+      <div className="add-bici-modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
-          <h2>Agregar Biciestacionamiento</h2>
-          <button className="modal-close" onClick={handleClose}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-          </button>
+          <h2>Proponer Biciestacionamiento</h2>
+          <button className="modal-close" onClick={handleClose}>×</button>
         </div>
 
-        <form className="modal-form" onSubmit={handleSubmit}>
-          {/* Nombre */}
-          <div className="form-group">
-            <label htmlFor="nombre">
-              Nombre del Biciestacionamiento <span className="required">*</span>
-            </label>
-            <input
-              type="text"
-              id="nombre"
-              name="nombre"
-              value={formData.nombre}
-              onChange={handleChange}
-              placeholder="Ej: Biciestacionamiento Metro Insurgentes"
-              className={errors.nombre ? 'input-error' : ''}
-            />
-            {errors.nombre && <span className="error-message">{errors.nombre}</span>}
-          </div>
+        <form className="add-bici-form" onSubmit={handleSubmit}>
+          {errors.submit && <div className="error-message">{errors.submit}</div>}
 
-          {/* Delegación */}
-          <div className="form-group">
-            <label htmlFor="delegacion">
-              Alcaldía <span className="required">*</span>
-            </label>
-            <select
-              id="delegacion"
-              name="delegacion"
-              value={formData.delegacion}
-              onChange={handleChange}
-              className={errors.delegacion ? 'input-error' : ''}
-            >
-              <option value="">Selecciona una alcaldía</option>
-              {DELEGACIONES_CDMX.map(delegacion => (
-                <option key={delegacion} value={delegacion}>
-                  {delegacion}
-                </option>
-              ))}
-            </select>
-            {errors.delegacion && <span className="error-message">{errors.delegacion}</span>}
-          </div>
-
-          {/* Colonia y Calle */}
-          <div className="form-row">
+          {/* Información básica */}
+          <div className="form-section">
+            <h3>Información Básica</h3>
             <div className="form-group">
-              <label htmlFor="colonia">
-                Colonia <span className="required">*</span>
-              </label>
-              <input
-                type="text"
-                id="colonia"
-                name="colonia"
-                value={formData.colonia}
-                onChange={handleChange}
-                placeholder="Ej: Roma Norte"
-                className={errors.colonia ? 'input-error' : ''}
-              />
-              {errors.colonia && <span className="error-message">{errors.colonia}</span>}
+              <label>Nombre *</label>
+              <input type="text" name="nombre" value={formData.nombre} onChange={handleChange} placeholder="Ej: Biciestacionamiento Metro Chapultepec" />
+              {errors.nombre && <span className="error-text">{errors.nombre}</span>}
             </div>
-
             <div className="form-group">
-              <label htmlFor="calle">
-                Calle <span className="required">*</span>
-              </label>
-              <input
-                type="text"
-                id="calle"
-                name="calle"
-                value={formData.calle}
-                onChange={handleChange}
-                placeholder="Ej: Av. Insurgentes"
-                className={errors.calle ? 'input-error' : ''}
-              />
-              {errors.calle && <span className="error-message">{errors.calle}</span>}
+              <label>Descripción</label>
+              <textarea name="descripcion" value={formData.descripcion} onChange={handleChange} rows="3" />
             </div>
           </div>
 
-          {/* Número */}
-          <div className="form-group">
-            <label htmlFor="numero">Número</label>
-            <input
-              type="text"
-              id="numero"
-              name="numero"
-              value={formData.numero}
-              onChange={handleChange}
-              placeholder="Ej: 123 o S/N"
-            />
-          </div>
-
-          {/* Descripción */}
-          <div className="form-group">
-            <label htmlFor="descripcion">
-              Descripción <span className="required">*</span>
-            </label>
-            <textarea
-              id="descripcion"
-              name="descripcion"
-              value={formData.descripcion}
-              onChange={handleChange}
-              placeholder="Describe brevemente el biciestacionamiento, características, ubicación exacta, etc."
-              rows="4"
-              maxLength="300"
-              className={errors.descripcion ? 'input-error' : ''}
-            />
-            <div className="char-counter">
-              {formData.descripcion.length}/300 caracteres
-            </div>
-            {errors.descripcion && <span className="error-message">{errors.descripcion}</span>}
-          </div>
-
-          {/* Horario */}
-          <div className="form-group">
-            <label htmlFor="horario">
-              Horario <span className="required">*</span>
-            </label>
-            <select
-              id="horario"
-              name="horario"
-              value={formData.horario}
-              onChange={handleChange}
-              className={errors.horario ? 'input-error' : ''}
-            >
-              <option value="">Selecciona un horario</option>
-              {HORARIOS_PREDEFINIDOS.map(horario => (
-                <option key={horario} value={horario}>
-                  {horario}
-                </option>
-              ))}
-            </select>
-            {errors.horario && <span className="error-message">{errors.horario}</span>}
-          </div>
-
-          {/* Horario Personalizado */}
-          {formData.horario === 'Personalizado' && (
+          {/* Ubicación */}
+          <div className="form-section">
+            <h3>Ubicación</h3>
             <div className="form-group">
-              <label htmlFor="horarioPersonalizado">
-                Especifica el horario <span className="required">*</span>
-              </label>
-              <input
-                type="text"
-                id="horarioPersonalizado"
-                name="horarioPersonalizado"
-                value={formData.horarioPersonalizado}
-                onChange={handleChange}
-                placeholder="Ej: Lunes a Sábado 8:00 - 18:00"
-                className={errors.horarioPersonalizado ? 'input-error' : ''}
-              />
-              {errors.horarioPersonalizado && (
-                <span className="error-message">{errors.horarioPersonalizado}</span>
-              )}
+              <label>Dirección *</label>
+              <input type="text" name="direccion" value={formData.direccion} onChange={handleChange} placeholder="Ej: Av. Chapultepec 123" />
+              {errors.direccion && <span className="error-text">{errors.direccion}</span>}
             </div>
-          )}
-
-          {/* Capacidad y Tipo de Acceso */}
-          <div className="form-row">
-            <div className="form-group">
-              <label htmlFor="capacidad">Capacidad (bicicletas)</label>
-              <input
-                type="number"
-                id="capacidad"
-                name="capacidad"
-                value={formData.capacidad}
-                onChange={handleChange}
-                placeholder="Ej: 20"
-                min="1"
-              />
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="tipoAcceso">Tipo de Acceso</label>
-              <select
-                id="tipoAcceso"
-                name="tipoAcceso"
-                value={formData.tipoAcceso}
-                onChange={handleChange}
-              >
-                <option value="publico">Público</option>
-                <option value="privado">Privado</option>
-                <option value="restringido">Restringido</option>
-              </select>
+            <div className="form-row">
+              <div className="form-group">
+                <label>Delegación *</label>
+                <select name="delegacion" value={formData.delegacion} onChange={handleChange}>
+                  <option value="">Selecciona una delegación</option>
+                  {delegaciones.map(del => <option key={del} value={del}>{del}</option>)}
+                </select>
+                {errors.delegacion && <span className="error-text">{errors.delegacion}</span>}
+              </div>
+              <div className="form-group">
+                <label>Colonia *</label>
+                <input type="text" name="colonia" value={formData.colonia} onChange={handleChange} placeholder="Ej: Juárez" />
+                {errors.colonia && <span className="error-text">{errors.colonia}</span>}
+              </div>
             </div>
           </div>
 
-          {/* Foto */}
-          <div className="form-group">
-            <label htmlFor="foto">
-              Foto del Biciestacionamiento <span className="required">*</span>
-            </label>
-            <div className="foto-upload">
-              <input
-                type="file"
-                id="foto"
-                name="foto"
-                accept="image/*"
-                onChange={handleFotoChange}
-                className="foto-input"
-              />
-              <label htmlFor="foto" className="foto-label">
-                {fotoPreview ? (
-                  <div className="foto-preview">
-                    <img src={fotoPreview} alt="Preview" />
-                    <div className="foto-overlay">
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                        <polyline points="17 8 12 3 7 8"></polyline>
-                        <line x1="12" y1="3" x2="12" y2="15"></line>
-                      </svg>
-                      <span>Cambiar foto</span>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="foto-placeholder">
-                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                      <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                      <polyline points="21 15 16 10 5 21"></polyline>
-                    </svg>
-                    <span>Haz clic para subir una foto</span>
-                    <small>JPG, PNG (máx. 5MB)</small>
-                  </div>
-                )}
-              </label>
-            </div>
-            {errors.foto && <span className="error-message">{errors.foto}</span>}
+          {/* MAPA */}
+          <div className="form-section">
+            <h3>Ubicación en el Mapa *</h3>
+            <p style={{fontSize: '14px', color: '#666', marginBottom: '10px'}}>
+              👆 Haz clic en el mapa para marcar la ubicación exacta
+            </p>
+            <div id="proposal-map" style={{
+              width: '100%',
+              height: '400px',
+              borderRadius: '8px',
+              border: '2px solid #E0E0E0',
+              marginBottom: '10px'
+            }}></div>
+            {formData.lat && formData.lng && (
+              <div style={{padding: '10px', background: '#f0f0f0', borderRadius: '6px', fontSize: '13px'}}>
+                📍 Lat: {formData.lat} | Lng: {formData.lng}
+              </div>
+            )}
+            {errors.ubicacion && <span className="error-text">{errors.ubicacion}</span>}
           </div>
 
-          {/* Botones */}
-          <div className="modal-footer">
-            <button type="button" className="btn-cancel" onClick={handleClose}>
-              Cancelar
-            </button>
-            <button type="submit" className="btn-submit">
-              Agregar Biciestacionamiento
+          {/* Horarios */}
+          <div className="form-section">
+            <h3>Horario y Disponibilidad</h3>
+            <div className="form-group">
+              <label>Horario *</label>
+              <input type="text" name="horario" value={formData.horario} onChange={handleChange} placeholder="Ej: 6:00 AM - 10:00 PM" />
+              {errors.horario && <span className="error-text">{errors.horario}</span>}
+            </div>
+            <div className="form-group">
+              <label>Días Disponibles *</label>
+              <div className="dias-grid">
+                {diasSemana.map(dia => (
+                  <label key={dia} className="dia-checkbox">
+                    <input type="checkbox" checked={formData.dias.includes(dia)} onChange={() => handleDiasChange(dia)} />
+                    <span>{dia}</span>
+                  </label>
+                ))}
+              </div>
+              {errors.dias && <span className="error-text">{errors.dias}</span>}
+            </div>
+          </div>
+
+          {/* Características */}
+          <div className="form-section">
+            <h3>Características</h3>
+            <div className="form-row">
+              <div className="form-group">
+                <label>Capacidad *</label>
+                <input type="number" name="capacidad" value={formData.capacidad} onChange={handleChange} min="1" placeholder="Ej: 20" />
+                {errors.capacidad && <span className="error-text">{errors.capacidad}</span>}
+              </div>
+              <div className="form-group">
+                <label>Tipo *</label>
+                <select name="tipo" value={formData.tipo} onChange={handleChange}>
+                  <option value="">Selecciona</option>
+                  <option value="Público">Público</option>
+                  <option value="Privado">Privado</option>
+                  <option value="Restringido">Restringido</option>
+                </select>
+                {errors.tipo && <span className="error-text">{errors.tipo}</span>}
+              </div>
+            </div>
+            <div className="form-group">
+              <label>Requisitos</label>
+              <textarea name="requisitos" value={formData.requisitos} onChange={handleChange} rows="2" />
+            </div>
+
+            {/* 👇 IMAGEN CON CLOUDINARY */}
+            <div className="form-group">
+              <label>Fotografía *</label>
+              <ImageUploader 
+                onImageUploaded={handleImageUploaded}
+                currentImage={formData.foto}
+              />
+              {errors.foto && <span className="error-text">{errors.foto}</span>}
+            </div>
+          </div>
+
+          <div className="modal-actions">
+            <button type="button" className="btn-cancel" onClick={handleClose} disabled={loading}>Cancelar</button>
+            <button type="submit" className="btn-submit" disabled={loading}>
+              {loading ? 'Enviando...' : 'Enviar Propuesta'}
             </button>
           </div>
         </form>

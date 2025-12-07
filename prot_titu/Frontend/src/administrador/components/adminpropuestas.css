@@ -1,0 +1,419 @@
+/* adminpropuestas.css */
+
+.admin-propuestas-container {
+  padding: 30px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.propuestas-header {
+  margin-bottom: 30px;
+}
+
+.propuestas-header h1 {
+  font-size: 32px;
+  font-weight: 700;
+  color: #1A1A1A;
+  margin: 0 0 20px 0;
+}
+
+/* Filter Tabs */
+.filter-tabs {
+  display: flex;
+  gap: 12px;
+  border-bottom: 2px solid #E0E0E0;
+}
+
+.tab {
+  padding: 12px 24px;
+  background: none;
+  border: none;
+  font-size: 15px;
+  font-weight: 600;
+  color: #666;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s;
+}
+
+.tab:hover {
+  color: #B32134;
+}
+
+.tab.active {
+  color: #B32134;
+}
+
+.tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #B32134;
+}
+
+/* Loading */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid rgba(179, 33, 52, 0.2);
+  border-top: 4px solid #B32134;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-container p {
+  font-size: 16px;
+  color: #666;
+  margin: 0;
+}
+
+/* Empty State */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px;
+  text-align: center;
+}
+
+.empty-state svg {
+  color: #ccc;
+  margin-bottom: 20px;
+}
+
+.empty-state h3 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #666;
+  margin: 0;
+}
+
+/* Propuestas Grid */
+.propuestas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 24px;
+}
+
+.propuesta-card {
+  background: #FFFFFF;
+  border: 2px solid #E0E0E0;
+  border-radius: 16px;
+  overflow: hidden;
+  transition: all 0.3s;
+}
+
+.propuesta-card:hover {
+  border-color: #B32134;
+  box-shadow: 0 8px 24px rgba(179, 33, 52, 0.15);
+  transform: translateY(-4px);
+}
+
+.card-image {
+  position: relative;
+  width: 100%;
+  height: 220px;
+  overflow: hidden;
+}
+
+.card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.status-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.badge-pending {
+  background: #ffc107;
+  color: #1A1A1A;
+}
+
+.badge-approved {
+  background: #28a745;
+  color: #FFFFFF;
+}
+
+.badge-rejected {
+  background: #dc3545;
+  color: #FFFFFF;
+}
+
+/* Card Content */
+.card-content {
+  padding: 20px;
+}
+
+.card-content h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1A1A1A;
+  margin: 0 0 16px 0;
+  line-height: 1.3;
+}
+
+.card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #666;
+}
+
+.info-item svg {
+  color: #B32134;
+  flex-shrink: 0;
+}
+
+.info-item span {
+  flex: 1;
+}
+
+/* Rechazo Info */
+.rechazo-info {
+  padding: 12px;
+  background: rgba(220, 53, 69, 0.1);
+  border-left: 4px solid #dc3545;
+  border-radius: 8px;
+  margin-top: 16px;
+}
+
+.rechazo-info strong {
+  display: block;
+  font-size: 13px;
+  color: #dc3545;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.rechazo-info p {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Card Actions */
+.card-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 2px solid #f0f0f0;
+}
+
+.btn-approve,
+.btn-reject {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-approve {
+  background: #28a745;
+  color: #FFFFFF;
+}
+
+.btn-approve:hover {
+  background: #218838;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+.btn-reject {
+  background: #dc3545;
+  color: #FFFFFF;
+}
+
+.btn-reject:hover {
+  background: #c82333;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+}
+
+/* Modal de Rechazo */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.reject-modal {
+  background: #FFFFFF;
+  border-radius: 16px;
+  padding: 32px;
+  max-width: 500px;
+  width: 90%;
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.reject-modal h2 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1A1A1A;
+  margin: 0 0 12px 0;
+}
+
+.reject-modal p {
+  font-size: 15px;
+  color: #666;
+  margin: 0 0 20px 0;
+}
+
+.reject-modal textarea {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #E0E0E0;
+  border-radius: 8px;
+  font-size: 15px;
+  color: #1A1A1A;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 100px;
+  margin-bottom: 20px;
+}
+
+.reject-modal textarea:focus {
+  outline: none;
+  border-color: #B32134;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.modal-actions button {
+  flex: 1;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.modal-actions button:first-child {
+  background: #f0f0f0;
+  color: #666;
+}
+
+.modal-actions button:first-child:hover {
+  background: #e0e0e0;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .propuestas-grid {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-propuestas-container {
+    padding: 20px;
+  }
+
+  .propuestas-header h1 {
+    font-size: 26px;
+  }
+
+  .filter-tabs {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .tab {
+    padding: 10px 16px;
+    font-size: 14px;
+    white-space: nowrap;
+  }
+
+  .propuestas-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .card-image {
+    height: 200px;
+  }
+
+  .reject-modal {
+    padding: 24px;
+  }
+
+  .reject-modal h2 {
+    font-size: 20px;
+  }
+
+  .modal-actions {
+    flex-direction: column;
+  }
+
+  .modal-actions button {
+    width: 100%;
+  }
+}

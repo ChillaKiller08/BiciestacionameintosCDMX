@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 const connectDB = require('./config/database');
+const path = require('path'); // 👈 AGREGAR
 
 const app = express();
 
@@ -13,10 +14,14 @@ app.use(express.json());
 // Conectar a MongoDB
 connectDB();
 
+// 👇 AGREGAR - Servir archivos estáticos
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 // Rutas
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/biciestacionamientos', require('./routes/biciestacionamientoRoutes'));
+app.use('/api/propuestas', require('./routes/propuestas')); // 👈 AGREGAR
 
 // Ruta de prueba
 app.get('/', (req, res) => {

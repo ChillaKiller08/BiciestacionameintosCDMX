@@ -7,6 +7,8 @@
   top: 0;
   z-index: 1000;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  left: 0; /* 👈 AGREGAR */
+  right: 0; /* 👈 AGREGAR */
 }
 
 .navbar-content {
@@ -218,4 +220,41 @@
   background: rgba(179, 33, 52, 0.1);
   color: #B32134;
   border-left-color: #B32134;
+}
+
+/* Dropdown Menu Items */
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 12px 20px;
+  background: none;
+  border: none;
+  text-align: left;
+  font-size: 14px;
+  font-weight: 500;
+  color: #1A1A1A;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.menu-item:hover {
+  background: rgba(179, 33, 52, 0.05);
+  color: #B32134;
+}
+
+.menu-item svg {
+  flex-shrink: 0;
+}
+
+.menu-item.logout {
+  color: #dc3545;
+  border-top: 1px solid #f0f0f0;
+  margin-top: 8px;
+  padding-top: 16px;
+}
+
+.menu-item.logout:hover {
+  background: rgba(220, 53, 69, 0.05);
 }
